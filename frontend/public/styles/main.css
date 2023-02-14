@@ -4,7 +4,7 @@
 
 /* CSS 스타일 분기 ( 조건처리 )  */
 .no-js body{
-  background-color: red;
+  background-color: black;
   color: white;
 }
 

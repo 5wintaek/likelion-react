@@ -1,101 +1,116 @@
 import React from 'react';
+import { ReactComponent as Spinner } from '../../assets/atom-spinner.svg';
 
-// Component's Life Cycle (컴포넌트의 생명주기)
-// 탄생 (constructor: 1번) → (render: N번) |
-// 성장
-// 죽음
-
-// 라이프 사이클 메서드
-//
+const API_ENDPOINT = 'https://randomuser.me/api/?results=5';
 
 class LifeCycle extends React.Component {
   /* render 단계 ---------------------------------------------------------------- */
 
   state = {
-    message: 'loading....',
+    // 로딩 중인가요? (데이터 패치 요청????)
+    isLoading: false,
+    // 통신 결과가 도착했나요? (데이터???)
+    data: [], // null
+    // 오류는 어떤 정보(상태 코드, 메시지)를 가지고 있나요?
+    error: null,
+    // 혹시 오류가 발생했나요?
+    hasError: false,
   };
 
   render() {
-    // console.log(document.querySelector('.LifeCycle')); // 안 나옵니다. - 승택 ✅
+    if (this.state.isLoading) {
+      return (
+        <div
+          role="alert"
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '100vh',
+          }}
+        >
+          <Spinner title="로딩 중..." />
+        </div>
+      );
+    }
+
     return (
       <>
-        <div>
-          <div className="LifeCycle" tabIndex={0}>
-            컴포넌트의 생명 주기
-          </div>
-          <input
-            id="select-me"
-            type="text"
-            placeholder="위에 요소를 클릭하면 초점이 내게 와요~"
-            aria-label="나를 선택하세요"
-          />
-        </div>
         <button
           type="button"
-          onClick={() => this.setState({ message: 'updated content' })}
+          onClick={() => this.fetchRandomPeople(API_ENDPOINT)}
         >
-          {this.state.message}
+          다양한 사람들을 보고 싶어요!
         </button>
+
+        {/* <ul>
+          <li></li>
+        </ul> */}
       </>
     );
-
-    // return React.createElement(
-    //   'div',
-    //   { className: 'LifeCycle' },
-    //   '컴포넌트의 생명 주기'
-    // );
   }
 
   /* commit 단계 ---------------------------------------------------------------- */
 
-  // 이벤트 핸들러 (사이드 이펙트 작성 구간)
-  // handleClick(e) {
-  //   e.target.style.cssText = ``;
-  // }
+  // React + Firebase 클라우드 Backend (Serverless) : AWS
+  // - 인증(회원가입, 로그인, SNS 로그인)
+  // - 파이어스토어 (데이터베이스: JSON 데이터 구조)
+  // - 스토리지 (이미지, 에셋 업로드 → URL)
+  // - 호스팅 (서비스, FTP → 무료 웹 호스팅)
 
-  // - 실제 DOM에 접근, 조작 (DOM 스크립트 또는 Vanilla 스크립트)
+  async fetchRandomPeople(endpoint) {
+    // Random User API 서버에 요청
+    try {
+      const response = await fetch(endpoint);
+      const data = await response.json();
+      this.setState({
+        data: data.results,
+      });
+    } catch (error) {
+      console.log(error);
+      this.setState({
+        error: {
+          message: error.message,
+        },
+        hasError: true,
+      });
+    } finally {
+      this.setState({ isLoading: false });
+    }
+  }
 
-  // 컴포넌트가 마운트 된 이후
-  // 마운트 (1회)
   componentDidMount() {
-    console.log('여기서는 실제 DOM에 접근이 가능해요');
-    // console.log(document.querySelector('.LifeCycle')); // div가 나올 거 같아요. - 승택 & 선영
+    // this.fetchRandomPeople(API_ENDPOINT);
 
-    // 바닐라 프로그래밍 (React가 아닌 것 === 사이드 이펙트)
-    // 명령형 프로그래밍
     const lifecycleElement = document.querySelector('.LifeCycle');
     const selectMeInput = document.getElementById('select-me');
 
-    // click : mouse event (a11y)
-    // focusable element
-    lifecycleElement.addEventListener('click', (e) => {
-      e.target.style.cssText = `
+    if (lifecycleElement) {
+      lifecycleElement.addEventListener('click', (e) => {
+        e.target.style.cssText = `
         background: skyblue;
         color: darkblue;
         font-size: 3rem;
         padding: 20px;
       `;
 
-      // 문서의 input 요소를 찾아서 초점을 이동
-      setTimeout(() => {
-        selectMeInput.value = '나! 선택받았어~~';
-        selectMeInput.select();
-      }, 1500);
-    });
+        setTimeout(() => {
+          selectMeInput.value = '나! 선택받았어~~';
+          selectMeInput.select();
+        }, 1500);
+      });
 
-    lifecycleElement.addEventListener('keyup', (e) => {
-      if (e.key.toLowerCase().includes('enter')) {
-        lifecycleElement.click();
-      }
-    });
+      lifecycleElement.addEventListener('keyup', (e) => {
+        if (e.key.toLowerCase().includes('enter')) {
+          lifecycleElement.click();
+        }
+      });
+    }
   }
 
-  // 컴포넌트가 업데이트 된 이후
-  // 업데이트 (N회)
   componentDidUpdate() {
     console.log('우리 컴포넌트가 변경되었어요~');
   }
 }
 
-// 기본 내보내기
 export default LifeCycle;

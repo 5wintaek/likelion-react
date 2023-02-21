@@ -1,5 +1,4 @@
 import './styles/global.css';
-
 import { StrictMode } from 'react';
 
 // ReactDOM v18
@@ -12,7 +11,7 @@ import App from './app/App';
 
 const root = createRoot(document.getElementById('root'));
 root.render(
-  <StrictMode>
+  <>
     <App />
-  </StrictMode>
+  </>
 );

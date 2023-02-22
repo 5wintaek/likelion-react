@@ -1,9 +1,10 @@
 import React from 'react';
-import { ReactComponent as Spinner } from '../../assets/atom-spinner.svg';
+import styles from './LifeCycle.module.css';
+import { ReactComponent as Spinner } from 'assets/atom-spinner.svg';
 
 export const API_ENDPOINT = 'https://randomuser.me/api/?results=5';
 
-class LifeCycle extends React.Component {
+export class LifeCycle extends React.Component {
   /* 
   클래스 필드 ------------------------------------------------------------------- */
 
@@ -136,5 +137,3 @@ class LifeCycle extends React.Component {
     console.log('구독 중인 친구 접속 감지 이벤트를 해제했습니다.');
   }
 }
-
-export default LifeCycle;
